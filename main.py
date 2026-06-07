@@ -1,5 +1,32 @@
 import mysql.connector
 
+def init_db():
+    conn = mysql.connector.connect(
+        host="127.0.0.1",
+        user="root",
+        password="root123"
+    )
+
+    cursor = conn.cursor()
+
+    cursor.execute("CREATE DATABASE IF NOT EXISTS student_db")
+    cursor.execute("USE student_db")
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS student (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100),
+            age INT,
+            mark INT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )
+    """)
+
+    conn.commit()
+    print("Databases initialized successfully")
+    conn.close()
+
 def get_connection():
     return mysql.connector.connect(
         host="127.0.0.1",
@@ -70,7 +97,7 @@ def delete_student():
     DELETE FROM student
     WHERE id=%s
     """
-    values = (student_id),
+    values = (student_id,)
 
     cursor.execute(query,values)
     conn.commit()
@@ -108,4 +135,6 @@ def menu():
         else:
             print("Invaild choice")
 
-menu()
+if __name__ == "__main__":
+    init_db()
+    menu()
