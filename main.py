@@ -1,13 +1,12 @@
 import mysql.connector
 
 def get_connection():
-    db = mysql.connector.connect(
-        host = "127.0.0.1",
-        user = "root",
-        password = "root123",
-        database = "student_db")
-
-    return db
+    return mysql.connector.connect(
+        host="127.0.0.1",
+        user="root",
+        password="root123",
+        database="student_db"
+    )
 
 def add_student():
     conn = get_connection()
@@ -15,15 +14,25 @@ def add_student():
 
     name = input("enter name: ")
     age = int(input("enter age: "))
-    marks = int(input("enter marks: "))
+    mark = int(input("enter marks: "))
 
     query = "INSERT INTO student (name, age, mark) VALUES (%s, %s, %s)"
-    values = (name, age, marks)
+    values = (name, age, mark)
 
     cursor.execute(query, values)
-
     conn.commit()
-    print("student added successfully.")
     conn.close()
 
-add_student()
+def view_students():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = "SELECT * FROM student"
+    cursor.execute(query)
+
+    rows = cursor.fetchall()
+
+    for row in rows:
+        print(f"id:{row[0]} | name:{row[1]} | age:{row[2]} | mark:{row[3]}")
+
+    conn.close()
